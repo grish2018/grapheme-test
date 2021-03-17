@@ -5,6 +5,7 @@
       class="customInput__input"
       :class="{ error: inputError || error }"
       :id="id"
+      v-mask="mask"
       :value="value"
       @focus="focusHandler"
       @blur="blurHandler"
@@ -42,6 +43,14 @@ export default {
           this.inputError = false;
           this.$refs[`${this.id}`].setCustomValidity("");
         }
+      } else if (this.inputType === "cardNumber") {
+        if (!e.target.value || e.target.value.length !== 24) {
+          this.inputError = true;
+          this.$refs[`${this.id}`].setCustomValidity("Field is incorect.");
+        } else {
+          this.inputError = false;
+          this.$refs[`${this.id}`].setCustomValidity("");
+        }
       } else if (!e.target.value) {
         this.inputError = true;
         this.$refs[`${this.id}`].setCustomValidity("Fill the field.");
@@ -62,6 +71,9 @@ export default {
     },
   },
   props: {
+    mask: {
+      type: String,
+    },
     label: {
       type: String,
     },
@@ -92,6 +104,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "../style";
 .customInput {
   display: flex;
   flex-direction: column;
@@ -123,6 +136,9 @@ export default {
       font-size: 16px;
       line-height: 18px;
       color: #6b6b6b;
+      @include sm {
+        font-size: 12px;
+      }
     }
   }
 }

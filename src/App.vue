@@ -3,7 +3,7 @@
     <Header />
     <main>
       <div class="formWrapper">
-        <div class="formWrapper__stepper">
+        <div v-show="step !== 'thankYou'" class="formWrapper__stepper">
           <span
             clas="formWrapper__stepper__item"
             :class="{ currentStep: step === 'shipping' }"
@@ -12,7 +12,18 @@
           <ArrowRigthIcon />
           <span :class="{ currentStep: step === 'payment' }">Оплата</span>
         </div>
-        <ShippingForm @paymentStep="changeStep" />
+        <transition name="fade">
+          <ShippingForm v-if="step === 'shipping'" @paymentStep="changeStep" />
+        </transition>
+        <transition name="fade">
+          <PaymentForm v-if="step === 'payment'" @thankeYouStep="changeStep" />
+        </transition>
+        <transition name="fade">
+          <ThankeYouStep
+            v-if="step === 'thankYou'"
+            @shippingStep="changeStep"
+          />
+        </transition>
       </div>
     </main>
   </div>
@@ -22,9 +33,17 @@
 import Header from "./components/Header";
 import ArrowRigthIcon from "./assets/icons/arrowRigthIcon.svg";
 import ShippingForm from "./components/ShippingForm";
+import PaymentForm from "./components/PaymentForm";
+import ThankeYouStep from "./components/ThankeYouStep";
 export default {
   name: "App",
-  components: { Header, ArrowRigthIcon, ShippingForm },
+  components: {
+    Header,
+    ArrowRigthIcon,
+    ShippingForm,
+    PaymentForm,
+    ThankeYouStep,
+  },
   data() {
     return {
       step: "shipping",
@@ -60,6 +79,7 @@ body {
   src: local("Helvetica Neue"),
     url(./fonts/LiberationSans-Regular.ttf) format("truetype");
 }
+
 #app {
   display: flex;
   flex-direction: column;
@@ -73,7 +93,9 @@ body {
     align-items: center;
     background: #f6f8ff;
     .formWrapper {
-      width: 410px;
+      max-width: 410px;
+      height: 520px;
+      width: 100%;
       display: flex;
       flex-direction: column;
       padding: 20px 40px;
@@ -101,5 +123,11 @@ body {
 }
 .currentStep {
   color: #101d94;
+}
+.fade-enter-active {
+  transition: opacity 0.8s;
+}
+.fade-enter {
+  opacity: 0;
 }
 </style>

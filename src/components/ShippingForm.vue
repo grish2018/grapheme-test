@@ -358,7 +358,6 @@ export default {
   methods: {
     changeError() {
       this.error = false;
-      this.textAreaError = false;
     },
 
     submitHandler() {
